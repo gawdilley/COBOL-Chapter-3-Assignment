@@ -2,19 +2,28 @@
 
        PROGRAM-ID. RPT1000.
 
+      *  Programmer.: Gabe Dilley
+      *  Date.......: 2026.02.19
+      *  GitHub URL.: https://github.com/gawdilley/COBOL-Chapter-1-Assignment
+      *  Description: This program reads customer master records and
+      *  produces a Year-To-Date Sales Report. It prints customer
+      *  sales for the current and previous year, calculates the
+      *  change amount and percentage, and displays grand totals
+      *  for all qualifying customers.
+
        ENVIRONMENT DIVISION.
 
        INPUT-OUTPUT SECTION.
 
        FILE-CONTROL.
-           SELECT CUSTMAST ASSIGN TO CUSTMAST.
-           SELECT SALESRPT ASSIGN TO SALESRPT.
+           SELECT INPUT-CUSTMAST ASSIGN TO CUSTMAST.
+           SELECT OUTPUT-RPT2000 ASSIGN TO RPT2000.
 
        DATA DIVISION.
 
        FILE SECTION.
 
-       FD  CUSTMAST
+       FD  INPUT-CUSTMAST
            RECORDING MODE IS F
            LABEL RECORDS ARE STANDARD
            RECORD CONTAINS 130 CHARACTERS
@@ -28,7 +37,7 @@
            05  CM-SALES-LAST-YTD       PIC S9(5)V9(2).
            05  FILLER                  PIC X(87).
 
-       FD  SALESRPT
+       FD  OUTPUT-RPT2000
            RECORDING MODE IS F
            LABEL RECORDS ARE STANDARD
            RECORD CONTAINS 130 CHARACTERS
@@ -39,6 +48,10 @@
 
        01  SWITCHES.
            05  CUSTMAST-EOF-SWITCH     PIC X    VALUE "N".
+
+       *>Adding this from Powerpoint
+       01  CALCULATED-FIELDS.
+           05 CHANGE-AMOUNT        PIC s9(5)V99.
 
        01  PRINT-FIELDS.
            05  PAGE-COUNT      PIC S9(3)   VALUE ZERO.
@@ -85,13 +98,17 @@
            05  FILLER      PIC X(20)   VALUE "CUST                ".
            05  FILLER      PIC X(20)   VALUE "            SALES   ".
            05  FILLER      PIC X(20)   VALUE "      SALES         ".
-           05  FILLER      PIC X(69)   VALUE SPACE.
+           *>Added this line from Powerpoint
+           05  FILLER      PIC X(20)   VALUE "CHANGE     CHANGE   ".
+           05  FILLER      PIC X(52)   VALUE SPACE.
 
        01  HEADING-LINE-4.
            05  FILLER      PIC X(20)   VALUE "NUM    CUSTOMER NAME".
            05  FILLER      PIC X(20)   VALUE "           THIS YTD ".
            05  FILLER      PIC X(20)   VALUE "     LAST YTD       ".
-           05  FILLER      PIC X(69)   VALUE SPACE.
+           *>Added this line from Powerpoint
+           05  FILLER      PIC X(20)   VALUE "AMOUNT    PERCENT   ".
+           05  FILLER      PIC X(52)   VALUE SPACE.
 
        01  CUSTOMER-LINE.
            05  CL-CUSTOMER-NUMBER  PIC 9(5).
@@ -101,27 +118,43 @@
            05  CL-SALES-THIS-YTD   PIC ZZ,ZZ9.99-.
            05  FILLER              PIC X(4)     VALUE SPACE.
            05  CL-SALES-LAST-YTD   PIC ZZ,ZZ9.99-.
-           05  FILLER              PIC X(69)    VALUE SPACE.
+           *>Added these four lines from Powerpoint
+           *>Start of addition
+           05  FILLER              PIC X(4)     VALUE SPACE.
+           05  CL-CHANGE-AMOUNT    PIC ZZ,ZZ9.99-.
+           05  FILLER              PIC X(3)     VALUE SPACE.
+           05  CL-CHANGE-PERCENT   PIC ZZ9.9-.
+           *>End of addition
+           05  FILLER              PIC X(55)    VALUE SPACE.
 
        01  GRAND-TOTAL-LINE.
            05  FILLER              PIC X(27)    VALUE SPACE.
            05  GTL-SALES-THIS-YTD  PIC Z,ZZZ,ZZ9.99-.
            05  FILLER              PIC X(1)     VALUE SPACE.
            05  GTL-SALES-LAST-YTD  PIC Z,ZZZ,ZZ9.99-.
-           05  FILLER              PIC X(69)    VALUE SPACE.
+           *>Added these four lines from Powerpoint
+           *>Start of addition
+           05  FILLER              PIC X(1)     VALUE SPACE.
+           05  GTL-CHANGE-AMOUNT   PIC Z,ZZZ,ZZ9.99-.
+           05  FILLER              PIC X(3)     VALUE SPACE.
+           05  GTL-CHANGE-PERCENT  PIC ZZ9.9-.
+           *>End of addition
+           05  FILLER              PIC X(55)    VALUE SPACE.
+
+
 
        PROCEDURE DIVISION.
 
        000-PREPARE-SALES-REPORT.
 
-           OPEN INPUT  CUSTMAST
-                OUTPUT SALESRPT.
+           OPEN INPUT  INPUT-CUSTMAST
+                OUTPUT OUTPUT-RPT2000.
            PERFORM 100-FORMAT-REPORT-HEADING.
            PERFORM 200-PREPARE-SALES-LINES
                UNTIL CUSTMAST-EOF-SWITCH = "Y".
            PERFORM 300-PRINT-GRAND-TOTALS.
-           CLOSE CUSTMAST
-                 SALESRPT.
+           CLOSE INPUT-CUSTMAST
+                 OUTPUT-RPT2000.
            STOP RUN.
 
        100-FORMAT-REPORT-HEADING.
@@ -137,11 +170,13 @@
 
            PERFORM 210-READ-CUSTOMER-RECORD.
            IF CUSTMAST-EOF-SWITCH = "N"
-               PERFORM 220-PRINT-CUSTOMER-LINE.
+               *>Added from Powerpoint
+               IF CM-SALES-THIS-YTD >= 10000
+                   PERFORM 220-PRINT-CUSTOMER-LINE.
 
        210-READ-CUSTOMER-RECORD.
 
-           READ CUSTMAST
+           READ INPUT-CUSTMAST
                AT END
                    MOVE "Y" TO CUSTMAST-EOF-SWITCH.
 
@@ -153,6 +188,19 @@
            MOVE CM-CUSTOMER-NAME    TO CL-CUSTOMER-NAME.
            MOVE CM-SALES-THIS-YTD   TO CL-SALES-THIS-YTD.
            MOVE CM-SALES-LAST-YTD   TO CL-SALES-LAST-YTD.
+           *>Added 10 lines from Powerpoint
+           *>Start of addition
+           COMPUTE CHANGE-AMOUNT =
+               CM-SALES-THIS-YTD - CM-SALES-LAST-YTD.
+           MOVE CHANGE-AMOUNT TO CL-CHANGE-AMOUNT.
+           IF CM-SALES-LAST-YTD = ZERO
+               MOVE 999.9 TO CL-CHANGE-PERCENT
+           ELSE
+               COMPUTE CL-CHANGE-PERCENT ROUNDED =
+                   CHANGE-AMOUNT * 100 / CM-SALES-LAST-YTD
+                   ON SIZE ERROR
+                       MOVE 999.9 to CL-CHANGE-PERCENT.
+           *>End of addition
            MOVE CUSTOMER-LINE TO PRINT-AREA.
            WRITE PRINT-AREA.
            ADD 1 TO LINE-COUNT.
@@ -179,5 +227,18 @@
 
            MOVE GRAND-TOTAL-THIS-YTD TO GTL-SALES-THIS-YTD.
            MOVE GRAND-TOTAL-LAST-YTD TO GTL-SALES-LAST-YTD.
+           *>Add 10 lines from Powerpoint
+           *>Start of addition
+           COMPUTE CHANGE-AMOUNT =
+               GRAND-TOTAL-THIS-YTD - GRAND-TOTAL-LAST-YTD.
+           MOVE CHANGE-AMOUNT TO GTL-CHANGE-AMOUNT.
+           IF GRAND-TOTAL-LAST-YTD = ZERO
+               MOVE 999.9 TO GTL-CHANGE-PERCENT
+           ELSE
+               COMPUTE GTL-CHANGE-PERCENT ROUNDED =
+                   CHANGE-AMOUNT * 100 / GRAND-TOTAL-LAST-YTD
+                   ON SIZE ERROR
+                       MOVE 999.9 TO GTL-CHANGE-PERCENT.
+           *>End of addition
            MOVE GRAND-TOTAL-LINE     TO PRINT-AREA.
            WRITE PRINT-AREA.
