@@ -81,34 +81,37 @@
            05  FILLER          PIC X(11)   VALUE SPACE.
            05  FILLER          PIC X(20)   VALUE "YEAR-TO-DATE SALES R".
            05  FILLER          PIC X(20)   VALUE "EPORT               ".
-           05  FILLER          PIC X(8)    VALUE "  PAGE: ".
+           05  FILLER          PIC X(18)    VALUE "            PAGE: ".
            05  Hl1-PAGE-NUMBER PIC ZZZ9.
-           05  FILLER          PIC X(49)   VALUE SPACE.
+           05  FILLER          PIC X(39)   VALUE SPACE.
 
        01  HEADING-LINE-2.
            05  FILLER          PIC X(7)    VALUE "TIME:  ".
            05  HL2-HOURS       PIC 9(2).
            05  FILLER          PIC X(1)    VALUE ":".
            05  HL2-MINUTES     PIC 9(2).
-           05  FILLER          PIC X(58)   VALUE SPACE.
+           05  FILLER          PIC X(68)   VALUE SPACE.
            05  FILLER          PIC X(10)   VALUE "RPT2001".
-           05  FILLER          PIC X(49)   VALUE SPACE.
+           05  FILLER          PIC X(39)   VALUE SPACE.
 
        01  HEADING-LINE-3.
-           05  FILLER      PIC X(20)   VALUE "CUST                ".
+           05  FILLER      PIC X(20)   VALUE "BRANCH SALES CUST   ".
+           *>Adding spaces for my brain to work better
+           05  FILLER      PIC X(14)    VALUE ALL' '.
            05  FILLER      PIC X(20)   VALUE "            SALES   ".
-           05  FILLER      PIC X(20)   VALUE "      SALES         ".
+           05  FILLER      PIC X(19)   VALUE "      SALES        ".
            *>Added this line from Powerpoint
            05  FILLER      PIC X(20)   VALUE "CHANGE     CHANGE   ".
-           05  FILLER      PIC X(52)   VALUE SPACE.
+           05  FILLER      PIC X(26)   VALUE SPACE.
 
        01  HEADING-LINE-4.
+           05  FILLER      PIC X(13)   VALUE " NUM    REP ".
            05  FILLER      PIC X(20)   VALUE "NUM    CUSTOMER NAME".
            05  FILLER      PIC X(20)   VALUE "           THIS YTD ".
            05  FILLER      PIC X(20)   VALUE "     LAST YTD       ".
            *>Added this line from Powerpoint
            05  FILLER      PIC X(20)   VALUE "AMOUNT    PERCENT   ".
-           05  FILLER      PIC X(52)   VALUE SPACE.
+           05  FILLER      PIC X(39)   VALUE SPACE.
 
            *>Copied Heading-Line-4 and changed it to dashes
        01  HEADING-LINE-5.
@@ -125,11 +128,17 @@
            05  FILLER      PIC X(10)   VALUE ALL'-'.
            05  FILLER      PIC X(4)   VALUE SPACE.
            05  FILLER      PIC X(10)   VALUE ALL'-'.
-           05  FILLER      PIC X(1)   VALUE SPACE.
+           05  FILLER      PIC X(3)   VALUE SPACE.
            05  FILLER      PIC X(6)   VALUE ALL'-'.
-           05  FILLER      PIC X(42)   VALUE SPACE.
+           05  FILLER      PIC X(39)   VALUE SPACE.
 
        01  CUSTOMER-LINE.
+       05  FILLER              PIC X(2)  VALUE SPACE.
+           *>Add two columns
+           05  CL-BRANCH-NUMBER    PIC 99.   
+           05  FILLER              PIC X(4)  VALUE SPACE.
+           05  CL-SALESREP-NUMBER  PIC 99.   
+           05  FILLER              PIC X(3)  VALUE SPACE.
            05  CL-CUSTOMER-NUMBER  PIC 9(5).
            05  FILLER              PIC X(2)     VALUE SPACE.
            05  CL-CUSTOMER-NAME    PIC X(20).
@@ -144,7 +153,7 @@
            05  FILLER              PIC X(3)     VALUE SPACE.
            05  CL-CHANGE-PERCENT   PIC ZZ9.9-.
            *>End of addition
-           05  FILLER              PIC X(55)    VALUE SPACE.
+           05  FILLER              PIC X(41)    VALUE SPACE.
 
        01  DASHED-TOTAL-LINE.
            05  FILLER              PIC X(40)    VALUE SPACE.
@@ -158,7 +167,7 @@
            05  FILLER              PIC X(55)    VALUE SPACE.
 
        01  GRAND-TOTAL-LINE.
-           05  FILLER              PIC X(27)    VALUE SPACE.
+           05  FILLER              PIC X(40)    VALUE SPACE.
            05  GTL-SALES-THIS-YTD  PIC Z,ZZZ,ZZ9.99-.
            05  FILLER              PIC X(1)     VALUE SPACE.
            05  GTL-SALES-LAST-YTD  PIC Z,ZZZ,ZZ9.99-.
@@ -169,7 +178,7 @@
            05  FILLER              PIC X(3)     VALUE SPACE.
            05  GTL-CHANGE-PERCENT  PIC ZZ9.9-.
            *>End of addition
-           05  FILLER              PIC X(55)    VALUE SPACE.
+           05  FILLER              PIC X(42)    VALUE SPACE.
 
 
 
@@ -214,6 +223,8 @@
 
            IF LINE-COUNT >= LINES-ON-PAGE
                PERFORM 230-PRINT-HEADING-LINES.
+           MOVE CM-BRANCH-NUMBER   TO CL-BRANCH-NUMBER.
+           MOVE CM-SALESREP-NUMBER TO CL-SALESREP-NUMBER.
            MOVE CM-CUSTOMER-NUMBER  TO CL-CUSTOMER-NUMBER.
            MOVE CM-CUSTOMER-NAME    TO CL-CUSTOMER-NAME.
            MOVE CM-SALES-THIS-YTD   TO CL-SALES-THIS-YTD.
