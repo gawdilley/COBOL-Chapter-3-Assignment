@@ -91,7 +91,7 @@
            05  FILLER          PIC X(1)    VALUE ":".
            05  HL2-MINUTES     PIC 9(2).
            05  FILLER          PIC X(58)   VALUE SPACE.
-           05  FILLER          PIC X(10)   VALUE "RPT2000".
+           05  FILLER          PIC X(10)   VALUE "RPT2001".
            05  FILLER          PIC X(49)   VALUE SPACE.
 
        01  HEADING-LINE-3.
@@ -110,6 +110,25 @@
            05  FILLER      PIC X(20)   VALUE "AMOUNT    PERCENT   ".
            05  FILLER      PIC X(52)   VALUE SPACE.
 
+           *>Copied Heading-Line-4 and changed it to dashes
+       01  HEADING-LINE-5.
+           05  FILLER      PIC X(6)   VALUE ALL'-'.
+           05  FILLER      PIC X(1)   VALUE SPACE.
+           05  FILLER      PIC X(5)   VALUE ALL'-'.
+           05  FILLER      PIC X(1)   VALUE SPACE.
+           05  FILLER      PIC X(5)   VALUE ALL'-'.
+           05  FILLER      PIC X(2)   VALUE SPACE.
+           05  FILLER      PIC X(20)   VALUE ALL'-'.
+           05  FILLER      PIC X(3)   VALUE SPACE.
+           05  FILLER      PIC X(10)   VALUE ALL'-'.
+           05  FILLER      PIC X(4)   VALUE SPACE.
+           05  FILLER      PIC X(10)   VALUE ALL'-'.
+           05  FILLER      PIC X(4)   VALUE SPACE.
+           05  FILLER      PIC X(10)   VALUE ALL'-'.
+           05  FILLER      PIC X(1)   VALUE SPACE.
+           05  FILLER      PIC X(6)   VALUE ALL'-'.
+           05  FILLER      PIC X(42)   VALUE SPACE.
+
        01  CUSTOMER-LINE.
            05  CL-CUSTOMER-NUMBER  PIC 9(5).
            05  FILLER              PIC X(2)     VALUE SPACE.
@@ -125,6 +144,17 @@
            05  FILLER              PIC X(3)     VALUE SPACE.
            05  CL-CHANGE-PERCENT   PIC ZZ9.9-.
            *>End of addition
+           05  FILLER              PIC X(55)    VALUE SPACE.
+
+       01  DASHED-TOTAL-LINE.
+           05  FILLER              PIC X(40)    VALUE SPACE.
+           05  FILLER              PIC X(13)     VALUE ALL'='.
+           05  FILLER              PIC X(1)     VALUE SPACE.
+           05  FILLER              PIC X(13)     VALUE ALL'='.
+           05  FILLER              PIC X(1)     VALUE SPACE.
+           05  FILLER              PIC X(13)     VALUE ALL'='.
+           05  FILLER              PIC X(3)     VALUE SPACE.
+           05  FILLER              PIC X(5)     VALUE ALL'='.
            05  FILLER              PIC X(55)    VALUE SPACE.
 
        01  GRAND-TOTAL-LINE.
@@ -224,6 +254,9 @@
            WRITE PRINT-AREA.
            MOVE HEADING-LINE-4 TO PRINT-AREA.
            WRITE PRINT-AREA.
+           *>Print new heading line
+           MOVE HEADING-LINE-5 TO PRINT-AREA.
+           WRITE PRINT-AREA.
            MOVE ZERO TO LINE-COUNT.
            MOVE 2 TO SPACE-CONTROL.
 
@@ -244,5 +277,7 @@
                    ON SIZE ERROR
                        MOVE 999.9 TO GTL-CHANGE-PERCENT.
            *>End of addition
-           MOVE GRAND-TOTAL-LINE     TO PRINT-AREA.
+           MOVE DASHED-TOTAL-LINE to PRINT-AREA.
+           WRITE PRINT-AREA.
+           MOVE GRAND-TOTAL-LINE TO PRINT-AREA.
            WRITE PRINT-AREA.
