@@ -1,6 +1,6 @@
        IDENTIFICATION DIVISION.
 
-       PROGRAM-ID. RPT1000.
+       PROGRAM-ID. RPT2000.
 
       *  Programmer.: Gabe Dilley
       *  Date.......: 2026.02.19
@@ -91,7 +91,7 @@
            05  FILLER          PIC X(1)    VALUE ":".
            05  HL2-MINUTES     PIC 9(2).
            05  FILLER          PIC X(58)   VALUE SPACE.
-           05  FILLER          PIC X(10)   VALUE "RPT1000".
+           05  FILLER          PIC X(10)   VALUE "RPT2000".
            05  FILLER          PIC X(49)   VALUE SPACE.
 
        01  HEADING-LINE-3.
@@ -216,6 +216,10 @@
            WRITE PRINT-AREA.
            MOVE HEADING-LINE-2 TO PRINT-AREA.
            WRITE PRINT-AREA.
+           *>Add a blank line by moving spaces into print-area
+           MOVE SPACES TO PRINT-AREA.
+           WRITE PRINT-AREA.
+           *>End blank line
            MOVE HEADING-LINE-3 TO PRINT-AREA.
            WRITE PRINT-AREA.
            MOVE HEADING-LINE-4 TO PRINT-AREA.
