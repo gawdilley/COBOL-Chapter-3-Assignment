@@ -156,4 +156,3 @@ BRANCH SALES CUST                    SALES            SALES        CHANGE     CH
 
 *Note: Values shown above are sample data for demonstration purposes.*
 
-```
