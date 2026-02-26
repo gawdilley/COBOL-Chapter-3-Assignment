@@ -2,7 +2,6 @@
 
 **Author:** Gabe Dilley  
 **GitHub:** https://github.com/gawdilley  
-**Repository:** https://github.com/gawdilley/COBOL-Chapter-1-Assignment  
 **Language:** COBOL  
 **Date:** February 19, 2026  
 
