@@ -1,0 +1,11 @@
+RPT2000 – Self Review
+Author: Gabe Dilley
+Date: 2026-02-19
+
+Overall, I feel pretty good about how this program turned out. I was able to take the base structure and successfully expand it by adding the new columns for Change Amount and Change Percent. The calculation logic is solid, the rounding works correctly, and I handled the divide-by-zero case so the program won’t crash if last year’s sales are zero. I also made sure the grand totals section uses the same logic as the detail lines, which keeps the report consistent and professional.
+
+That said, I can see where my layout decisions made things harder than they needed to be. Adding the left-most columns (Branch, Sales Rep, and Customer Number) increased the complexity of the CUSTOMER-LINE structure. Once those fields were added, the spacing became more fragile and required more filler adjustments. It works correctly, but it’s not as clean or flexible as it could be.
+
+The biggest area I would improve is the heading alignment. The amount of manual spacing and hard-coded filler fields makes the headings tedious to maintain. Any small change requires counting characters and adjusting spacing manually, which is inefficient and easy to mess up. In the future, I would look for ways to structure headings more systematically to reduce the need for manual alignment tweaks.
+
+Overall, this assignment helped reinforce file handling, formatted output, numeric editing, and COMPUTE logic in COBOL. I’m confident in the functionality of the program, and I can clearly see where I’ve improved — as well as where I can write cleaner, more maintainable code next time.
