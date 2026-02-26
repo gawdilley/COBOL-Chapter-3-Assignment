@@ -156,21 +156,4 @@ BRANCH SALES CUST                    SALES            SALES        CHANGE     CH
 
 *Note: Values shown above are sample data for demonstration purposes.*
 
----
-
-## How to Run
-
-Compile:
-```
-cobc -x RPT2000.cbl
-```
-
-Run:
-```
-./RPT2000
-```
-
-Review the generated output file:
-```
-RPT2000
 ```
